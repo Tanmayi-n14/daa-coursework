@@ -1,0 +1,237 @@
+You are given an array of integers of size N.
+You must reconstruct the array in non-decreasing order using only the following operation:
+Choose an index i and move the smallest element from the suffix i…N-1 to index i by repeatedly swapping adjacent elements.
+Each adjacent swap counts as 1 operation.
+Your Tasks:
+1. Output the sorted array
+2. Output the total number of adjacent swaps performed
+3. Output whether the number of swaps is EVEN or ODD
+
+
+
+#define MAXN 85
+
+void constrainedSelectionSort(int arr[], int N, int *swap_count){
+
+    for (int i = 0; i < N - 1; i++) {
+        
+        int min_index = i;
+        for (int j = i + 1; j < N; j++) {
+         
+            if (arr[j] < arr[min_index]) {
+                min_index = j;
+            }
+        }
+
+
+        while (min_index > i) {
+          
+            int temp = arr[min_index];
+            arr[min_index] = arr[min_index - 1];
+            arr[min_index - 1] = temp;
+
+
+            min_index--;
+
+            (*swap_count)++;
+        }
+    }
+}
+
+int main() {
+    int N;
+    if (scanf("%d", &N) != 1) return 0; 
+
+    int arr[MAXN];
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    int swap_count = 0;
+    constrainedSelectionSort(arr, N, &swap_count);
+
+    for (int i = 0; i < N; i++) {
+        printf("%d", arr[i]);
+        if (i != N - 1) printf(" ");
+    }
+    printf("\n%d\n", swap_count);
+
+    if (swap_count % 2 == 0)
+        printf("EVEN\n");
+    else
+        printf("ODD\n");
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Given a string S, define a valid pair (i, j) such that:
+1. i < j
+2. S[i] == S[j]
+3. The number of characters between i and j is even
+4. The ASCII sum of characters between i and j is divisible by 3
+You must count the number of valid pairs using pure recursion only.
+
+
+
+#include <stdio.h>
+#include <string.h>
+
+int getSum(char s[], int current, int target) {
+    if (current >= target) {
+        return 0;
+    }
+    return (int)s[current] + getSum(s, current + 1, target);
+}
+
+
+int countPairs(char s[], int n, int i, int j) {
+    if (i >= n - 1) {
+        return 0;
+    }
+    if (j >= n) {
+        return countPairs(s, n, i + 1, i + 2);
+    }
+
+    int isValid = 0;
+    if (s[i] == s[j]) {
+        int dist = j - i - 1;
+        if (dist % 2 == 0) {
+            int asciiSum = getSum(s, i + 1, j);
+            if (asciiSum % 3 == 0) {
+                isValid = 1;
+            }
+        }
+    }
+    return isValid + countPairs(s, n, i, j + 1);
+}
+
+int main() {
+    char s[1000];
+    if (scanf("%s", s) != 1) return 0;
+    int n = strlen(s);
+    int result = countPairs(s, n, 0, 1);
+    printf("%d\n", result);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given an integer array of size N.
+A subarray is rotation-invariant if:
+1. It has length ≥ 2
+2. For every left rotation except the original, the absolute difference between:
+
+sum of elements at prime indices
+sum of elements at non-prime indices remains unchanged
+(Indices are relative to the subarray and 0-based.)
+Count how many subarrays satisfy this property.
+
+
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+#define MAXN 50
+
+int isPrime(int x) {
+    if (x < 2) return 0;
+    for (int i = 2; i * i <= x; i++) {
+        if (x % i == 0) return 0;
+    }
+    return 1;
+}
+
+int calculateDiff(int temp[], int len) {
+    int primeSum = 0;
+    int nonPrimeSum = 0;
+    for (int i = 0; i < len; i++) {
+        if (isPrime(i)) primeSum += temp[i];
+        else nonPrimeSum += temp[i];
+    }
+    return abs(primeSum - nonPrimeSum);
+}
+
+int isRotationInvariant(int arr[], int start, int end) {
+    int len = end - start + 1;
+    if (len < 2) return 0;
+
+    int temp[MAXN];
+    for (int i = 0; i < len; i++) temp[i] = arr[start + i];
+    
+    int targetDiff = calculateDiff(temp, len);
+    
+    for (int r = 1; r < len; r++) {
+        int first = temp[0];
+        for (int i = 0; i < len - 1; i++) temp[i] = temp[i + 1];
+        temp[len - 1] = first;
+        
+        if (calculateDiff(temp, len) != targetDiff) return 0;
+    }
+    return 1;
+}
+
+int countRotationInvariantSubarrays(int arr[], int n) {
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (isRotationInvariant(arr, i, j)) count++;
+        }
+    }
+    return count;
+}
+
+int main() {
+    int n;
+    if (scanf("%d", &n) != 1) return 0;
+    int arr[MAXN];
+    for (int i = 0; i < n; i++) scanf("%d", &arr[i]);
+    printf("%d\n", countRotationInvariantSubarrays(arr, n));
+    return 0;
+}

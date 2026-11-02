@@ -1,0 +1,387 @@
+Given a text string T and a pattern P, implement Horspool’s Algorithm to find the first occurrence index of P in T.
+Return -1 if the pattern is not found.
+Your Tasks:
+1. Output the index of the first occurrence of pattern P in text T
+2. Return -1 if pattern is not present
+3. Do not use built-in string search functions (find(), index(), etc.)
+4. Use Horspool’s Algorithm (shift table based approach)
+
+
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 256
+
+
+void buildShiftTable(char pattern[], int m, int shift[]) {
+    int i;
+    
+    for (i = 0; i < MAX; i++) {
+        shift[i] = m;
+    }
+    
+    for (i = 0; i < m - 1; i++) {
+        shift[(unsigned char)pattern[i]] = m - 1 - i;
+    }
+}
+
+int horspool(char text[], char pattern[]) {
+    int n = strlen(text);
+    int m = strlen(pattern);
+    int shift[MAX];
+    
+    if (m > n) return -1;
+
+    buildShiftTable(pattern, m, shift);
+
+    int i = m - 1; 
+    
+    while (i < n) {
+        int k = 0;
+        
+        while (k < m && pattern[m - 1 - k] == text[i - k]) {
+            k++;
+        }
+        
+        if (k == m) {
+         
+            return i - m + 1;
+        } else {
+     
+            i += shift[(unsigned char)text[i]];
+        }
+    }
+
+    return -1;
+}
+
+
+int main() {
+    char text[100005], pattern[100005];
+
+    fgets(text, sizeof(text), stdin);
+    fgets(pattern, sizeof(pattern), stdin);
+
+    text[strcspn(text, "\n")] = '\0';
+    pattern[strcspn(pattern, "\n")] = '\0';
+
+    printf("%d\n", horspool(text, pattern));
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given an integer array arr of size n and an integer k.
+
+Using the Heap Sort algorithm:
+
+1. Sort the array in ascending order
+
+2. Find the k-th largest element in the array
+
+Your Tasks:
+
+1. Output the sorted array
+
+2. Output the k-th largest element
+
+3. Do not use built-in sorting functions (like sort(), sorted())
+
+4. Implement Heap Sort using heapify (max-heap or min-heap approach)
+
+
+
+
+
+
+#include <stdio.h>
+
+// Function to maintain the max-heap property
+void heapify(int arr[], int n, int i) {
+    int largest = i;       // Initialize largest as root
+    int left = 2 * i + 1;  // left child index
+    int right = 2 * i + 2; // right child index
+
+    // If left child is larger than root
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    // If right child is larger than largest so far
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    // If largest is not root, swap and continue heapifying
+    if (largest != i) {
+        int temp = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = temp;
+
+        // Recursively heapify the affected sub-tree
+        heapify(arr, n, largest);
+    }
+}
+
+// Main function to perform heap sort
+void heapSort(int arr[], int n) {
+    // Build heap (rearrange array)
+    // Start from the last non-leaf node and move upwards
+    for (int i = n / 2 - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // One by one extract an element from heap
+    for (int i = n - 1; i > 0; i--) {
+        // Move current root to end (it is the maximum)
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+
+        // Call max heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
+}
+
+int main() {
+    int n, k;
+    if (scanf("%d %d", &n, &k) != 2) return 0;
+
+    int arr[n];
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    heapSort(arr, n);
+
+    // Print sorted array
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    // k-th largest element is at index n - k
+    printf("%d\n", arr[n - k]);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Design a 2–3 Tree that supports the following operations:
+
+Insert(x) → Insert element x
+
+Search(x) → Check if element x exists
+
+A 2–3 Tree is a balanced search tree where:
+
+Each node has either 1 key (2-node) or 2 keys (3-node)
+
+All leaves are at the same level
+
+Tree remains balanced after every insertion
+
+Your Tasks
+
+Perform operations based on given queries
+
+For each Search(x), output:"Found" if present
+
+"Not Found" otherwise
+
+Do not use built-in data structures
+
+Maintain balance using node splitting
+
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h> // Necessary for bool, true, and false
+
+// Define the structure ONLY ONCE
+struct Node {
+    int n;                 // number of keys
+    int keys[3];           // max 3 for temporary overflow
+    struct Node* child[4]; // pointers to children
+    bool isLeaf;
+};
+
+struct Node* root = NULL;
+
+// Function to create a node
+struct Node* createNode(int key, bool isLeaf) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->n = 1;
+    newNode->keys[0] = key;
+    newNode->isLeaf = isLeaf;
+    for (int i = 0; i < 4; i++) {
+        newNode->child[i] = NULL;
+    }
+    return newNode;
+}
+
+// Search function
+int search(struct Node* node, int key) {
+    if (node == NULL) return 0;
+
+    int i = 0;
+    while (i < node->n && key > node->keys[i]) {
+        i++;
+    }
+
+    if (i < node->n && key == node->keys[i]) {
+        return 1; // Found
+    }
+
+    if (node->isLeaf) {
+        return 0; // Not Found
+    }
+
+    return search(node->child[i], key);
+}
+
+// Recursive insert to handle splits bottom-up
+struct Node* insertRecursive(struct Node* curr, int key, int* promotedKey) {
+    if (curr->isLeaf) {
+        // Simple insertion into leaf
+        int i = curr->n - 1;
+        while (i >= 0 && curr->keys[i] > key) {
+            curr->keys[i + 1] = curr->keys[i];
+            i--;
+        }
+        curr->keys[i + 1] = key;
+        curr->n++;
+    } else {
+        // Find child to recurse into
+        int i = 0;
+        while (i < curr->n && key > curr->keys[i]) {
+            i++;
+        }
+
+        int upKey;
+        struct Node* newNode = insertRecursive(curr->child[i], key, &upKey);
+
+        if (newNode != NULL) {
+            // Child split, insert promoted key into current node
+            int j = curr->n - 1;
+            while (j >= 0 && curr->keys[j] > upKey) {
+                curr->keys[j + 1] = curr->keys[j];
+                curr->child[j + 2] = curr->child[j + 1];
+                j--;
+            }
+            curr->keys[j + 1] = upKey;
+            curr->child[j + 2] = newNode;
+            curr->n++;
+        }
+    }
+
+    // Split if overflow (3 keys)
+    if (curr->n == 3) {
+        *promotedKey = curr->keys[1];
+        struct Node* rightNode = (struct Node*)malloc(sizeof(struct Node));
+        rightNode->n = 1;
+        rightNode->isLeaf = curr->isLeaf;
+        rightNode->keys[0] = curr->keys[2];
+        
+        rightNode->child[0] = curr->child[2];
+        rightNode->child[1] = curr->child[3];
+        
+        curr->n = 1; 
+        return rightNode;
+    }
+
+    return NULL;
+}
+
+void insert(int key) {
+    if (root == NULL) {
+        root = createNode(key, true);
+        return;
+    }
+
+    int promotedKey;
+    struct Node* splitNode = insertRecursive(root, key, &promotedKey);
+
+    // If root splits, tree grows in height
+    if (splitNode != NULL) {
+        struct Node* oldRoot = root;
+        root = createNode(promotedKey, false);
+        root->child[0] = oldRoot;
+        root->child[1] = splitNode;
+    }
+}
+
+int main() {
+    int q;
+    if (scanf("%d", &q) != 1) return 0;
+
+    while (q--) {
+        char op;
+        int x;
+        // The space before %c is crucial to skip whitespace/newlines
+        if (scanf(" %c %d", &op, &x) != 2) break;
+
+        if (op == 'I') {
+            if (!search(root, x)) {
+                insert(x);
+            }
+        } else if (op == 'S') {
+            if (search(root, x))
+                printf("Found\n");
+            else
+                printf("Not Found\n");
+        }
+    }
+
+    return 0;
+}

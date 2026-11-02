@@ -1,0 +1,239 @@
+There are N people standing in a circle numbered from 0 to N-1. Starting from person 0, every Kth person is eliminated from the circle. After each elimination, counting continues from the next
+
+remaining person. Your task is to determine:
+
+1. The last remaining person (winner).
+
+Your Tasks:
+
+1. Output the index of the last remaining person
+
+2. Do not simulate using built-in list removal functions
+
+3. Try to solve using an efficient mathematical / recursive approach
+
+
+
+#include <stdio.h> 
+
+int josephus(int N, int K) { 
+    int g = 0; // Base case: the winner for 1 person is index 0
+    for (int i = 2; i <= N; i++) {
+        // Find the winner position for 'i' people based on 'i-1' people
+        g = (g + K) % i;
+    }
+    return g;
+} 
+
+int main() { 
+    int N, K; 
+    if (scanf("%d %d", &N, &K) == 2) {
+        int winner = josephus(N, K); 
+        printf("%d\n", winner); 
+    }
+    return 0; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given an integer array nums of size N and an integer k. You must find the kth largest element in the array.
+
+Note:
+
+• It is the kth largest in sorted order
+
+• It is NOT the kth distinct element
+
+• You must solve it without using any built-in sort function
+
+Your Tasks:
+
+1. Output the kth largest element
+
+2. Do not use any built-in sort function
+
+3. Try to achieve better than O(N log N) time complexity
+
+
+#include <stdio.h> 
+#include <stdlib.h>
+#define MAXN 100005 
+
+// Helper to swap two elements
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Partition function: Places elements > pivot to the left
+int partition(int arr[], int left, int right) {
+    // Randomized pivot to avoid O(N^2) on sorted inputs
+    int pivotIndex = left + rand() % (right - left + 1);
+    int pivotValue = arr[pivotIndex];
+    swap(&arr[pivotIndex], &arr[right]); // Move pivot to end
+    
+    int storeIndex = left;
+    for (int i = left; i < right; i++) {
+        // For Kth largest, we want descending order logic
+        if (arr[i] > pivotValue) {
+            swap(&arr[i], &arr[storeIndex]);
+            storeIndex++;
+        }
+    }
+    swap(&arr[storeIndex], &arr[right]); // Move pivot to final place
+    return storeIndex;
+} 
+
+int findKthLargest(int arr[], int N, int k) { 
+    int left = 0, right = N - 1;
+    int target = k - 1; // 0-indexed position for kth largest
+    
+    while (left <= right) {
+        int pivotIndex = partition(arr, left, right);
+        
+        if (pivotIndex == target) {
+            return arr[pivotIndex];
+        } else if (pivotIndex > target) {
+            right = pivotIndex - 1;
+        } else {
+            left = pivotIndex + 1;
+        }
+    }
+    return -1;
+} 
+
+int main() { 
+    int N; 
+    if (scanf("%d", &N) != 1) return 0; 
+
+    int arr[MAXN]; 
+    for (int i = 0; i < N; i++) { 
+        scanf("%d", &arr[i]); 
+    } 
+    
+    int k; 
+    scanf("%d", &k); 
+    
+    // Seed for randomness in partition
+    srand(42); 
+    
+    int result = findKthLargest(arr, N, k); 
+    printf("%d\n", result); 
+    return 0; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given an integer array nums of size N and two integers lower and upper. A range sum S(i, j) is defined as:
+
+S(i,j)=nums[i]+nums[i+1]+...+nums[j], i≤j
+
+You must return the number of range sums that lie within the interval:
+
+lower,upper
+
+Your Tasks:
+
+1. Output the total number of valid range sums
+
+2. Do not use brute force O(N²) solution
+
+3. Use an efficient Divide-and-Conquer approach
+
+
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#define MAXN 100005 
+
+// Declare temp globally to handle the merge step memory
+long long temp[MAXN + 1];
+
+int mergeSort(long long prefix[], int left, int right, long long lower, long long upper) { 
+    if (left >= right) return 0;
+    
+    int mid = left + (right - left) / 2;
+    int count = mergeSort(prefix, left, mid, lower, upper) + 
+                mergeSort(prefix, mid + 1, right, lower, upper);
+    
+    // Count valid pairs across the two halves
+    int j = mid + 1, k = mid + 1;
+    for (int i = left; i <= mid; i++) {
+        while (j <= right && prefix[j] - prefix[i] < lower) j++;
+        while (k <= right && prefix[k] - prefix[i] <= upper) k++;
+        count += (k - j);
+    }
+    
+    // Merge step
+    int p1 = left, p2 = mid + 1, p = 0;
+    while (p1 <= mid && p2 <= right) {
+        temp[p++] = (prefix[p1] <= prefix[p2]) ? prefix[p1++] : prefix[p2++];
+    }
+    while (p1 <= mid) temp[p++] = prefix[p1++];
+    while (p2 <= right) temp[p++] = prefix[p2++];
+    
+    for (int i = 0; i < p; i++) {
+        prefix[left + i] = temp[i];
+    }
+    
+    return count;
+} 
+
+int countRangeSum(int nums[], int N, long long lower, long long upper) { 
+    long long prefix[MAXN + 1];
+    prefix[0] = 0;
+    for (int i = 0; i < N; i++) {
+        prefix[i + 1] = prefix[i] + (long long)nums[i];
+    }
+    return mergeSort(prefix, 0, N, lower, upper);
+} 
+
+int main() { 
+    int N; 
+    if (scanf("%d", &N) != 1) return 0; 
+
+    int nums[MAXN]; 
+    for (int i = 0; i < N; i++) { 
+        scanf("%d", &nums[i]); 
+    } 
+    
+    long long lower, upper; 
+    scanf("%lld %lld", &lower, &upper); 
+    
+    int result = countRangeSum(nums, N, lower, upper); 
+    printf("%d\n", result); 
+    return 0; 
+}

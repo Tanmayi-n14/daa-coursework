@@ -1,0 +1,240 @@
+You are given N activities with their start and end times. A person can perform only one activity at a time.
+Your goal is to select the maximum number of non-overlapping activities.
+Your Tasks:
+1. Output the maximum number of activities that can be performed
+2. Use a greedy approach (sorting + selection)
+3. Do not use brute-force subset generation
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure to represent an activity
+typedef struct {
+    int start;
+    int end;
+} Activity;
+
+// Comparator function to sort activities by their end times
+int compare(const void *a, const void *b) {
+    Activity *actA = (Activity *)a;
+    Activity *actB = (Activity *)b;
+    
+    if (actA->end < actB->end) return -1;
+    if (actA->end > actB->end) return 1;
+    return 0;
+}
+
+int main() {
+    int N;
+    if (scanf("%d", &N) != 1) return 0;
+
+    Activity *activities = (Activity *)malloc(N * sizeof(Activity));
+
+    // Input all start times
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &activities[i].start);
+    }
+    // Input all end times
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &activities[i].end);
+    }
+
+    // Step 1: Sort activities based on end times
+    qsort(activities, N, sizeof(Activity), compare);
+
+    // Step 2: Greedy Selection
+    int count = 0;
+    int last_end_time = -1;
+
+    for (int i = 0; i < N; i++) {
+        // If the start time of current activity is >= end time of last selected activity
+        if (activities[i].start >= last_end_time) {
+            count++;
+            last_end_time = activities[i].end;
+        }
+    }
+
+    printf("%d\n", count);
+
+    free(activities);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+You are given N items, each with a weight and value, and a knapsack of capacity W.
+You must maximize the total value without exceeding the capacity.
+Your Tasks:
+1. Output the maximum value achievable
+2. Use Dynamic Programming
+3. Do not use recursion without memoization
+
+
+
+
+
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+// Function to get the maximum of two integers
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int main() {
+    int N, W;
+    if (scanf("%d %d", &N, &W) != 2) return 0;
+
+    int *weights = (int *)malloc(N * sizeof(int));
+    int *values = (int *)malloc(N * sizeof(int));
+
+    // Input weights
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &weights[i]);
+    }
+    // Input values
+    for (int i = 0; i < N; i++) {
+        scanf("%d", &values[i]);
+    }
+
+    // dp[j] will store the maximum value for capacity j
+    // Long long is safer if N*Value exceeds 2^31 - 1, but based on constraints int is fine
+    int *dp = (int *)calloc(W + 1, sizeof(int));
+
+    // Process each item
+    for (int i = 0; i < N; i++) {
+        // Iterate backwards to ensure each item is used only once
+        for (int j = W; j >= weights[i]; j--) {
+            dp[j] = max(dp[j], values[i] + dp[j - weights[i]]);
+        }
+    }
+
+    printf("%d\n", dp[W]);
+
+    // Clean up
+    free(weights);
+    free(values);
+    free(dp);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Given a weighted directed graph with V vertices represented as an adjacency matrix, find the shortest distances between all pairs of vertices.
+Your Tasks:
+1. Output the final shortest distance matrix
+2. Use Dynamic Programming (Floyd-Warshall)
+3. Handle cases with unreachable nodes using INF
+
+
+
+
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+#define INF 1000000000
+
+int main() {
+    int V;
+    if (scanf("%d", &V) != 1) return 0;
+
+    // Use a long long or long for the distance matrix to prevent overflow 
+    // when adding INF + INF, though the logic below handles it.
+    long dist[V][V];
+
+    // Input the adjacency matrix
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            char val[20];
+            scanf("%s", val);
+            if (strcmp(val, "INF") == 0) {
+                dist[i][j] = INF;
+            } else {
+                dist[i][j] = atol(val);
+            }
+        }
+    }
+
+    // Floyd-Warshall Triple Loop
+    for (int k = 0; k < V; k++) {
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < V; j++) {
+                // If path through k is shorter, update it
+                // We check dist[i][k] and dist[k][j] != INF to avoid overflow additions
+                if (dist[i][k] != INF && dist[k][j] != INF) {
+                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+        }
+    }
+
+    // Output the final shortest distance matrix
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (dist[i][j] == INF) {
+                printf("INF");
+            } else {
+                printf("%ld", dist[i][j]);
+            }
+            if (j < V - 1) printf(" ");
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
