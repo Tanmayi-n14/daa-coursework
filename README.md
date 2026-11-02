@@ -13,7 +13,7 @@ DAA Coursework
 │   ├── Assignment 2: Divide-and-Conquer Paradigms
 │   ├── Assignment 3: Transform-and-Conquer & Balanced Trees
 │   └── Assignment 4: Greedy Strategies & Dynamic Programming
-└── Level 3: Jackfruit Final Project (Question Set 13 Team Assignment)
+└── Level 3: Jackfruit Final Project (Question Set 13)
     ├── Divide and Conquer: Rotation Points Counting
     ├── Greedy Method: Coin Change & Optimality Failure Analysis
     └── Dynamic Programming: 0/1 Knapsack with DP Table Reconstruction
@@ -80,9 +80,9 @@ DAA Coursework
 * **Question 3: 0/1 Knapsack DP (`src/03_knapsack_01_dp.c`)**:
   * 2D dynamic programming grid with full state table visualization and backtracking path recovery.
 * **Deliverables Included**:
-  * `13.pdf`: Official Question Paper.
-  * `493_500_514_516.pdf`: Final Submission Report.
-  * `code_493_500_514_516.pdf`: Code Report.
+  * `Question_Paper_Set_13.pdf`: Official Question Paper.
+  * `DAA_Jackfruit_Project_Report.pdf`: Comprehensive Project Report.
+  * `DAA_Jackfruit_Code_Documentation.pdf`: Code Documentation.
   * `DAA-ASSIGNMENT.pptx`: Defense Presentation Slides.
 
 ---
@@ -101,9 +101,6 @@ gcc -Wall -Wextra Level-1-Assignments/Assignment-02-Divide-and-Conquer/quicksele
 
 ---
 
-## 👥 Authors
+## 👤 Author
 * **Tanmayi Nagabhairava** ([@Tanmayi-n14](https://github.com/Tanmayi-n14)) — `PES1UG24CS493`
-* **Tejaswini R Pujar** — `PES1UG24CS500`
-* **Vaishnavi** — `PES1UG24CS514`
-* **Varsha A Patil** — `PES1UG24CS516`
 * Department of Computer Science & Engineering, PES University

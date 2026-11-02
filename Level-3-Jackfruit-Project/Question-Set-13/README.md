@@ -2,13 +2,7 @@
 
 * **Course**: Design and Analysis of Algorithms (UE24CS241B) — Semester 4
 * **Department**: Department of Computer Science and Engineering, PES University
-* **Section**: 4-I
-
-### 👥 Team Members:
-* **Tanmayi Nagabhairava** — `PES1UG24CS493`
-* **Tejaswini R Pujar** — `PES1UG24CS500`
-* **Vaishnavi** — `PES1UG24CS514`
-* **Varsha A Patil** — `PES1UG24CS516`
+* **Author**: Tanmayi Nagabhairava (`PES1UG24CS493`)
 
 ---
 
@@ -40,9 +34,9 @@
 
 ---
 
-## 📁 Included Assets & Deliverables
-* **`13.pdf`**: Official PES University Question Paper for Set 13.
-* **`493_500_514_516.pdf`**: Formal Project Submission Report.
-* **`code_493_500_514_516.pdf`**: Code Documentation Report.
-* **`DAA-ASSIGNMENT.pptx`**: Presentation Slide Deck.
+## 📁 Included Deliverables & Documents
+* **`Question_Paper_Set_13.pdf`**: Official PES University Question Paper for Set 13.
+* **`DAA_Jackfruit_Project_Report.pdf`**: Comprehensive Project Report with algorithm proofs and complexity bounds.
+* **`DAA_Jackfruit_Code_Documentation.pdf`**: Code Documentation Report.
+* **`DAA-ASSIGNMENT.pptx`**: Defense Presentation Slide Deck.
 * **`problem-statements/`**: Original photographed prompt sheets from Question Set 13.
